@@ -4,7 +4,7 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
-    <ProjectGuid>8d5798b4-d6e2-4aa1-bdb7-bac82af4c613</ProjectGuid>
+    <ProjectGuid>2772d9e6-6bab-45c7-a410-902e0772a38f</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>coffeeshop.products.api</DockerServiceName>
