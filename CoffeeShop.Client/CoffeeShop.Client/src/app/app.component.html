@@ -1,78 +1,9 @@
-<!--<button mat-button [matMenuTriggerFor]="menu">Actions</button>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="createProduct()">Create Product</button>
-  <button mat-menu-item (click)="createProductAndSupplier()">Create Product and Supplier</button>
-  <button mat-menu-item (click)="replaceProduct()">Replace Product</button>
-  <button mat-menu-item (click)="replaceSupplier()">Replace Supplier</button>
-  <button mat-menu-item (click)="replaceProductAndSupplier()">Replace Product and Supplier</button>
-  <button mat-menu-item (click)="updateProduct()">Update Product</button>
-  <button mat-menu-item (click)="updateSupplier()">Update Supplier</button>
-  <button mat-menu-item (click)="deleteProduct()">Delete Product</button>
-  <button mat-menu-item (click)="deleteSupplier()">Delete Supplier</button>
-</mat-menu>
-<div class="d-flex flex-wrap">
-  <div class="p-2 flex-fill">
-    <div class="table-responsive">
-      <table class="table table-sm table-striped w-100">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Supplier</th>
-            <th>Ratings</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let product of products" (click)="logProduct(product)">
-            <td>{{product?.name}}</td>
-            <td>{{product?.category}}</td>
-            <td>{{product?.price}}</td>
-            <td>{{product?.supplier?.name}}</td>
-            <td>{{product?.ratingsCount}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="p-2 flex-fill">
-    <div class="table-responsive">
-      <table class="table table-sm table-striped w-100">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>City</th>
-            <th>State</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let supplier of suppliers">
-            <td>{{supplier?.name}}</td>
-            <td>{{supplier?.city}}</td>
-            <td>{{supplier?.state}}</td>
-            <td>{{supplier?.productsCount}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>-->
-
-<!--<div class="container">
-  <div class="row">
-    <div class="col">
-      <category-filter></category-filter>
-      <product-table></product-table>
-    </div>
-    <div class="col">
-      <product-detail></product-detail>
-    </div>
-  </div>
-</div>-->
-
-<div class="bg-danger text-white text-center p-2 m-2" *ngIf="error != null">
+<!--<div class="bg-danger text-white text-center p-2 m-2" *ngIf="error != null">
   <h6 *ngFor="let e of error">{{e}}</h6>
   <button class="btn btn-warning" (click)="clearError()">OK</button>
-</div>
+</div>-->
 
-<router-outlet></router-outlet>
+<store-body></store-body>
+
+<!--<router-outlet></router-outlet>-->
+

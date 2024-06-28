@@ -4,6 +4,7 @@ using CoffeeShop.Products.Api.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoffeeShop.Products.Api.Storage.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240622145454_AddCategoryTypeItem")]
+    partial class AddCategoryTypeItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                     b.Property<int>("CategoryItem")
                         .HasColumnType("int");
 
-                    b.Property<string>("CategoryName")
+                    b.Property<string>("CategoryType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -67,7 +70,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                         {
                             Id = 1,
                             CategoryItem = 0,
-                            CategoryName = "Coffee",
+                            CategoryType = "Coffee",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Rich and aromatic Ethiopian beans.",
                             Name = "Ethiopian Whole Bean",
@@ -78,7 +81,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                         {
                             Id = 2,
                             CategoryItem = 1,
-                            CategoryName = "Coffee",
+                            CategoryType = "Coffee",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Smooth and strong Italian ground coffee.",
                             Name = "Italian Ground Coffee",
@@ -89,7 +92,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                         {
                             Id = 3,
                             CategoryItem = 2,
-                            CategoryName = "Coffee",
+                            CategoryType = "Coffee",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Convenient and tasty instant coffee.",
                             Name = "Instant Coffee Delight",
@@ -100,7 +103,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                         {
                             Id = 4,
                             CategoryItem = 3,
-                            CategoryName = "Coffee",
+                            CategoryType = "Coffee",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Rich espresso coffee pods.",
                             Name = "Espresso Coffee Pods",
@@ -111,7 +114,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                         {
                             Id = 5,
                             CategoryItem = 5,
-                            CategoryName = "Accessories",
+                            CategoryType = "Accessories",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Eco-friendly coffee maker.",
                             Name = "Organic Coffee Maker",
@@ -122,7 +125,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                         {
                             Id = 6,
                             CategoryItem = 14,
-                            CategoryName = "Others",
+                            CategoryType = "Others",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Receive a new coffee each month.",
                             Name = "Monthly Coffee Subscription",
@@ -133,7 +136,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                         {
                             Id = 7,
                             CategoryItem = 14,
-                            CategoryName = "Others",
+                            CategoryType = "Others",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Premium coffee delivered monthly.",
                             Name = "Premium Coffee Subscription",
@@ -144,7 +147,7 @@ namespace CoffeeShop.Products.Api.Storage.Migrations
                         {
                             Id = 8,
                             CategoryItem = 14,
-                            CategoryName = "Others",
+                            CategoryType = "Others",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Exclusive blends for coffee lovers.",
                             Name = "Coffee Lover's Subscription",

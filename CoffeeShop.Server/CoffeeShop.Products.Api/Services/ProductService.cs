@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CoffeeShop.Products.Api.Helpers;
 using CoffeeShop.Products.Api.Models;
 using CoffeeShop.Products.Api.Models.Dto;
 using CoffeeShop.Products.Api.Storage;
@@ -63,9 +64,50 @@ namespace CoffeeShop.Products.Api.Services
             await productRepository.DeleteAsync(product);
         }
 
-        public async Task<List<CoffeeCategories>> GetCategories()
+        //public async Task<List<string>> GetCategoryTypes()
+        //{
+        //    var categoryNames = Enum.GetNames(typeof(CategoryName)).ToList();
+        //    return await Task.FromResult(categoryNames);
+        //}
+
+        //public async Task<List<CategoryDto>> GetCategories()
+        //{
+        //    var allItems = new List<CategoryDto>();
+
+        //    foreach (CategoryName category in Enum.GetValues(typeof(CategoryName)))
+        //    {
+        //        var itemsByCategory = CategoryItemHelper.GetCategoryItemsByType(category);
+        //        var stringItems = new List<string>();
+
+        //        foreach (var item in itemsByCategory)
+        //        {
+        //            stringItems.Add(Enum.GetName(item) ?? string.Empty);
+        //        }
+
+        //        allItems.Add(new CategoryDto 
+        //        { 
+        //            Name = Enum.GetName(category) ?? string.Empty,
+        //            Subcategories = stringItems
+        //        }) ;
+        //    }
+
+        //    return allItems;
+        //}
+
+        public async Task<List<CategoryDto>> GetCategories()
         {
-            return await productRepository.GetCategories();
+            var allItems = Enum.GetValues(typeof(CategoryName))
+                .Cast<CategoryName>()
+                .Select(category => new CategoryDto
+                { 
+                    Name = Enum.GetName(typeof(CategoryName), category) ?? string.Empty,
+                    Subcategories = CategoryItemHelper.GetCategoryItemsByType(category)
+                    .Select(item => Enum.GetName(typeof(CategoryItem), item) ?? string.Empty)
+                    .ToList()
+                })
+                .ToList();
+
+            return await Task.FromResult(allItems);
         }
     }
 }

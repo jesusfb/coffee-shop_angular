@@ -9,12 +9,12 @@ namespace CoffeeShop.Products.Api.Mapping
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>()
-                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.ToString()));
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryName.ToString()));
             CreateMap<Supplier, SupplierDto>()
                 .ForMember(dest => dest.ProductsCount, opt => opt.MapFrom(src => src.Products.Count));
             CreateMap<ProductRating, ProductRatingDto>();
             CreateMap<ProductDto, Product>()
-                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => Enum.Parse<CoffeeCategories>(src.Category)));
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => Enum.Parse<CategoryName>(src.Category)));
             CreateMap<SupplierDto, Supplier>();
             CreateMap<ProductRatingDto, ProductRating>();
         }

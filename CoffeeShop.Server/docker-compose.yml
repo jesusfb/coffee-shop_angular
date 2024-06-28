@@ -13,6 +13,8 @@ services:
       - ConnectionStrings__ProductsConnection=Server=sqlserver;Database=CoffeeShop_Products;User=sa;Password=MyPass123;TrustServerCertificate=True;
     depends_on:
       - sqlserver
+    networks:
+      - productnet
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -21,3 +23,9 @@ services:
       SA_PASSWORD: "MyPass123"
     ports:
       - "1433:1433"
+    networks:
+      - productnet
+
+networks:
+  productnet:
+    driver: bridge

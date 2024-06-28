@@ -63,7 +63,7 @@ namespace CoffeeShop.Products.Api.Storage
             modelBuilder.Entity<Product>().HasOne(p => p.Supplier)
             .WithMany(s => s.Products).OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Product>().Property(p => p.Category).HasConversion<string>();
+            modelBuilder.Entity<Product>().Property(p => p.CategoryName).HasConversion<string>();
 
             modelBuilder.Entity<Supplier>().HasData(
                 new Supplier { Id = 1, Name = "Best Beans", City = "Seattle", State = "WA" },
@@ -72,14 +72,14 @@ namespace CoffeeShop.Products.Api.Storage
             );
 
             modelBuilder.Entity<Product>().HasData(
-                new Product { Id = 1, Name = "Ethiopian Whole Bean", Category = CoffeeCategories.WholeBean, Description = "Rich and aromatic Ethiopian beans.", Price = 15.99M, SupplierId = 1 },
-                new Product { Id = 2, Name = "Italian Ground Coffee", Category = CoffeeCategories.Ground, Description = "Smooth and strong Italian ground coffee.", Price = 12.50M, SupplierId = 2 },
-                new Product { Id = 3, Name = "Instant Coffee Delight", Category = CoffeeCategories.Instant, Description = "Convenient and tasty instant coffee.", Price = 8.99M, SupplierId = 3 },
-                new Product { Id = 4, Name = "Espresso Coffee Pods", Category = CoffeeCategories.Pods, Description = "Rich espresso coffee pods.", Price = 9.99M, SupplierId = 1 },
-                new Product { Id = 5, Name = "Organic Coffee Maker", Category = CoffeeCategories.CoffeeMakers, Description = "Eco-friendly coffee maker.", Price = 55.00M, SupplierId = 2 },
-                new Product { Id = 6, Name = "Monthly Coffee Subscription", Category = CoffeeCategories.Subscriptions, Description = "Receive a new coffee each month.", Price = 29.99M, SupplierId = 1 },
-                new Product { Id = 7, Name = "Premium Coffee Subscription", Category = CoffeeCategories.Subscriptions, Description = "Premium coffee delivered monthly.", Price = 49.99M, SupplierId = 2 },
-                new Product { Id = 8, Name = "Coffee Lover's Subscription", Category = CoffeeCategories.Subscriptions, Description = "Exclusive blends for coffee lovers.", Price = 39.99M, SupplierId = 3 }
+                new Product { Id = 1, Name = "Ethiopian Whole Bean", CategoryName = CategoryName.Coffee, CategoryItem = CategoryItem.WholeBean, Description = "Rich and aromatic Ethiopian beans.", Price = 15.99M, SupplierId = 1 },
+                new Product { Id = 2, Name = "Italian Ground Coffee", CategoryName = CategoryName.Coffee, CategoryItem = CategoryItem.Ground, Description = "Smooth and strong Italian ground coffee.", Price = 12.50M, SupplierId = 2 },
+                new Product { Id = 3, Name = "Instant Coffee Delight", CategoryName = CategoryName.Coffee, CategoryItem = CategoryItem.Instant, Description = "Convenient and tasty instant coffee.", Price = 8.99M, SupplierId = 3 },
+                new Product { Id = 4, Name = "Espresso Coffee Pods", CategoryName = CategoryName.Coffee, CategoryItem = CategoryItem.Pods, Description = "Rich espresso coffee pods.", Price = 9.99M, SupplierId = 1 },
+                new Product { Id = 5, Name = "Organic Coffee Maker", CategoryName = CategoryName.Accessories, CategoryItem = CategoryItem.CoffeeMakers, Description = "Eco-friendly coffee maker.", Price = 55.00M, SupplierId = 2 },
+                new Product { Id = 6, Name = "Monthly Coffee Subscription", CategoryItem = CategoryItem.Subscriptions, Description = "Receive a new coffee each month.", Price = 29.99M, SupplierId = 1 },
+                new Product { Id = 7, Name = "Premium Coffee Subscription", CategoryItem = CategoryItem.Subscriptions, Description = "Premium coffee delivered monthly.", Price = 49.99M, SupplierId = 2 },
+                new Product { Id = 8, Name = "Coffee Lover's Subscription", CategoryItem = CategoryItem.Subscriptions, Description = "Exclusive blends for coffee lovers.", Price = 39.99M, SupplierId = 3 }
             );
 
             modelBuilder.Entity<ProductRating>().HasData(

@@ -9,7 +9,5 @@ namespace CoffeeShop.Products.Api.Storage
         Task<List<Product>> GetProductsAsync();
         Task<List<Product>> GetProductsWithoutRatingsAsync();
         Task UpdateProductWithRelatedEntitiesAsync(Product product);
-
-        Task<List<CoffeeCategories>> GetCategories();
     }
 }

@@ -3,12 +3,14 @@ using CoffeeShop.Products.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Cors;
 
 namespace CoffeeShop.Products.Api.Controllers
 {
     [Route("api/products")]
     //[Authorize(Roles = "Administrator")]
     [ApiController]
+    [EnableCors("AllowSpecificOrigin")]
     //  [AutoValidateAntiforgeryToken]
     public class ProductController : Controller
     {
@@ -151,7 +153,8 @@ namespace CoffeeShop.Products.Api.Controllers
         {
             try
             {
-                return Ok(await productService.GetCategories());
+                var categories = await productService.GetCategories();
+                return Ok(categories);
             }
             catch (Exception ex)
             {

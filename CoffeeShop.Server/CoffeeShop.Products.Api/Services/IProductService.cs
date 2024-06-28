@@ -12,6 +12,7 @@ namespace CoffeeShop.Products.Api.Services
         Task UpdateProductAsync(ProductDto productDto);
         Task UpdateProductWithRelatedEntitiesAsync(ProductDto productDto);
         Task DeleteProductAsync(int id);
-        Task<List<CoffeeCategories>> GetCategories();
+       // Task<List<string>> GetCategoryTypes();
+        Task<List<CategoryDto>> GetCategories();
     }
 }

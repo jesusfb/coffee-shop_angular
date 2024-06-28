@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Product } from "./product.model";
-import { Repository } from "./repository";
+import { Repository } from "../services/repository";
 
 @Injectable()
 export class Cart {

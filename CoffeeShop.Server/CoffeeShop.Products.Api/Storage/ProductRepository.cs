@@ -41,8 +41,5 @@ namespace CoffeeShop.Products.Api.Storage
                 throw new Exception(e.Message, e.InnerException);
             }
         }
-
-        public async Task<List<CoffeeCategories>> GetCategories() =>
-            await context.Products.Select(p => p.Category).Distinct().OrderBy(c => c).ToListAsync();
     }
 }

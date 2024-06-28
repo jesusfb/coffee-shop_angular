@@ -1,12 +1,15 @@
 ﻿using CoffeeShop.DataAccess.Common;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 
 namespace CoffeeShop.Products.Api.Models
 {
     public class Product : BaseEntity
     {
         public string Name { get; set; }
-        public CoffeeCategories Category { get; set; }
+        public CategoryName? CategoryName { get; set; } = Models.CategoryName.Others;
+        public CategoryItem CategoryItem { get; set; }
         public string Description { get; set; }
         [Column(TypeName = "decimal(8, 2)")]
         public decimal Price { get; set; }
@@ -15,32 +18,71 @@ namespace CoffeeShop.Products.Api.Models
         public virtual List<ProductRating> ProductRatings { get; set; }
     }
 
-    public enum CoffeeCategories
+    public enum CategoryName
     {
-        // Coffee
-        WholeBean,       // Зерновой кофе (Whole bean coffee)
-        Ground,          // Молотый кофе (Ground coffee)
-        Instant,         // Растворимый кофе (Instant coffee)
-        Pods,            // Кофе в капсулах (Coffee pods)
-        Specialty,       // Специальный кофе, например, с ароматами или особыми добавками (Specialty coffee, e.g., flavored or premium blends)
-
-        // Accessories
-        CoffeeMakers,    // Кофеварки (Coffee makers)
-        Grinders,        // Кофемолки (Coffee grinders)
-        Mugs,            // Кружки (Coffee mugs)
-        Filters,         // Фильтры для кофе (Coffee filters)
-
-        // Food items
-        Pastries,        // Выпечка 
-        Snacks,          // Закуски
-        Syrups,          // Сиропы для кофе
-        MilkAlternatives,// Альтернативы молоку (миндальное, соевое и т.д.) (Milk alternatives (e.g., almond, soy))
-
-        // Merchandise
-        Merchandise,     // Одежда и аксессуары с логотипом магазина (Milk alternatives (e.g., almond, soy))
-
-        // Other
-        Gifts,           // Подарочные наборы (Gift sets)
-        Subscriptions    // Подписка на кофе (Coffee subscription services)
+        Coffee,
+        Accessories,
+        FoodItems,
+        Others
     }
+
+    public enum CategoryItem
+    {
+        [CategoryItem(CategoryName.Coffee)]
+        WholeBean,      
+        [CategoryItem(CategoryName.Coffee)]
+        Ground,         
+        [CategoryItem(CategoryName.Coffee)]
+        Instant,        
+        [CategoryItem(CategoryName.Coffee)]
+        Pods,           
+        [CategoryItem(CategoryName.Coffee)]
+        Specialty,      
+
+        [CategoryItem(CategoryName.Accessories)]
+        CoffeeMakers,   
+        [CategoryItem(CategoryName.Accessories)]
+        Grinders,       
+        [CategoryItem(CategoryName.Accessories)]
+        Mugs,           
+        [CategoryItem(CategoryName.Accessories)]
+        Filters,        
+
+        [CategoryItem(CategoryName.FoodItems)]
+        Pastries,       
+        [CategoryItem(CategoryName.FoodItems)]
+        Snacks,         
+        [CategoryItem(CategoryName.FoodItems)]
+        Syrups,         
+        [CategoryItem(CategoryName.FoodItems)]
+        MilkAlternatives,
+
+        [CategoryItem(CategoryName.Others)]
+        Merchandise,     
+        [CategoryItem(CategoryName.Others)]
+        Subscriptions
+    }
+
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    public class CategoryItemAttribute : Attribute
+    {
+        public CategoryName CategoryType { get; }
+
+        public CategoryItemAttribute(CategoryName category)
+        {
+            CategoryType = category;
+        }
+    }
+
+    //public static class CategoryItemHelper
+    //{
+    //    public static CategoryName GetCategoryTypeByItem(this CategoryItem categoryItem)
+    //    {
+    //        var fieldInfo = categoryItem.GetType().GetField(categoryItem.ToString());
+    //        var attribute = fieldInfo.GetCustomAttributes(typeof(CategoryAttribute), false).FirstOrDefault() as CategoryItemAttribute;
+    //        return attribute?.CategoryType ?? CategoryName.Others;
+    //    }
+    //}
 }
+
+

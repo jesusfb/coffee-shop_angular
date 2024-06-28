@@ -1,10 +1,10 @@
 export class Filter {
-  category?: string;
-  search?: string;
+  category?: string | "";
+  subcategory?: string | "";
+  search?: string | "";
 
-  reset() {
-    this.category = this.search = '';
-  }
+  //reset() {
+  //  this.category = this.search = '';
 }
 
 export class Pagination {

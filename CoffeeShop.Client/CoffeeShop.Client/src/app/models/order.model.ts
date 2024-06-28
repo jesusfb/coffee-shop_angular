@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Cart } from "./cart.model";
-import { Repository } from "./repository";
+import { Repository } from "../services/repository";
 import { NavigationStart, Router } from "@angular/router";
 import { filter } from "rxjs/operators";
 
