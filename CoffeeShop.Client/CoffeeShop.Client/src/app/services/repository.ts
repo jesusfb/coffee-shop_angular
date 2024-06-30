@@ -3,36 +3,31 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Filter, Pagination } from "../models/configClasses.repository";
 import { Supplier } from "../models/supplier.model";
-
+import { plainToClass } from 'class-transformer';
+import { Observable, catchError, of } from "rxjs";
+import { Category } from "../models/category.model";
 //const productsUrl = "/api/products";
 
-export const API_BASE_URL = 'https://localhost:8081/api'; 
+export const API_BASE_URL = 'https://localhost:8081/api';
 
 const productsUrl = `${API_BASE_URL}/products`;
 const suppliersUrl = `${API_BASE_URL}/suppliers`;
 const sessionUrl = `${API_BASE_URL}/session`;
-const ordersUrl = `${ API_BASE_URL }/orders`;
-import { plainToClass } from 'class-transformer';
-import { Observable } from "rxjs";
-import { Order, OrderConfirmation } from "../models/order.model";
-import { Category } from "../models/category.model";
+const ordersUrl = `${API_BASE_URL}/orders`;
+
 
 @Injectable()
 export class Repository {
   product: Product = new Product();
   products: Product[] = [];
-  suppliers: Supplier[];
-  categories: Category[];
-  filter: Filter;
+  suppliers: Supplier[] = [];
+  categories: Category[] = [];
+  filter: Filter = new Filter();
   paginationObject = new Pagination();
-  orders: Order[] = [];
   constructor(private http: HttpClient) {
-    this.filter = new Filter();
-    this.categories = [];
-    this.suppliers = [];
   }
 
-  getProduct(id: number) {  
+  getProduct(id: number) {
     this.http.get<Product>(`${productsUrl}/${id}`)
       .subscribe(p => this.product = p);
   }
@@ -144,9 +139,50 @@ export class Repository {
     this.http.delete(`${suppliersUrl}/${id}`).subscribe(() => this.updateData());
   }
 
-  getCategories() {
-    this.http.get<Category[]>(`${productsUrl}/categories`).subscribe(categories => this.categories = categories);
-    console.log(this.categories);
+  //getCategories() {
+  //  console.log(`${productsUrl}/categories`);
+  //  this.http.get<Category[]>(`${productsUrl}/categories`).subscribe(categories => this.categories = categories);
+  //}
+
+  //getCategories() {
+  //  console.log(`${productsUrl}/categories`);
+  //  this.http.get<Category[]>(`${productsUrl}/categories`)
+  //    .pipe(
+  //      catchError(error => {
+  //        console.error('Error loading categories:', error);
+  //        return of([]);
+  //      })
+  //    )
+  //    .subscribe(
+  //      categories => {
+  //        this.categories = categories;
+  //        console.log('Categories loaded:', this.categories);
+  //      },
+  //      error => {
+  //        console.error('Error in subscription:', error);
+  //      }
+  //    );
+  //}
+
+  getCategories(callback: () => void) {
+    console.log(`${productsUrl}/categories`);
+    this.http.get<Category[]>(`${productsUrl}/categories`)
+      .pipe(
+        catchError(error => {
+          console.error('Error loading categories:', error);
+          return of([]);
+        })
+      )
+      .subscribe(
+        categories => {
+          this.categories = categories;
+          console.log('Categories loaded:', categories);
+          callback();
+        },
+        error => {
+          console.error('Error in subscription:', error);
+        }
+      );
   }
 
   storeSessionData<T>(dataType: string, data: T) {
@@ -159,28 +195,28 @@ export class Repository {
     return this.http.get<T>(`${sessionUrl}/${dataType}`);
   }
 
-  getOrders() {
-    this.http.get<Order[]>(ordersUrl)
-      .subscribe(data => this.orders = data);
-  }
+  //getOrders() {
+  //  this.http.get<Order[]>(ordersUrl)
+  //    .subscribe(data => this.orders = data);
+  //}
 
-  createOrder(order: Order) {
-    this.http.post<OrderConfirmation>(ordersUrl, {
-      name: order.name,
-      address: order.address,
-      payment: order.payment,
-      products: order.products
-    }).subscribe(data => {
-      order.orderConfirmation = data
-      order.cart.clear();
-      order.clear();
-    });
-  }
+  //createOrder(order: Order) {
+  //  this.http.post<OrderConfirmation>(ordersUrl, {
+  //    name: order.name,
+  //    address: order.address,
+  //    payment: order.payment,
+  //    products: order.products
+  //  }).subscribe(data => {
+  //    order.orderConfirmation = data
+  //    order.cart.clear();
+  //    order.clear();
+  //  });
+  //}
 
-  shipOrder(order: Order) {
-    this.http.post(`${ordersUrl}/${order.id}`, {})
-      .subscribe(() => this.getOrders())
-  }
+  //shipOrder(order: Order) {
+  //  this.http.post(`${ordersUrl}/${order.id}`, {})
+  //    .subscribe(() => this.getOrders())
+  //}
 
   login(name: string, password: string): Observable<boolean> {
     return this.http.post<boolean>("/api/account/login", { name: name, password: password });

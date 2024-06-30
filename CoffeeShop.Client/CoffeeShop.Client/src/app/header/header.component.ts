@@ -1,16 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Repository } from '../services/repository';
+import { Category } from '../models/category.model';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html'
 })
 export class HeaderComponent {
-  selectedCategory: string;
-  selectedSubcategory: string | "";
+  selectedCategory: string = "";
+  selectedSubcategory: string = "";
+  categories: Category[] = [];
 
   constructor(public repository: Repository) {
-    this.selectedCategory = repository.categories[1].name;
+    this.repository.getCategories(() => {
+      this.categories = this.repository.categories;
+    });
+    this.selectedCategory = "Shop by categories";
     this.selectedSubcategory = "";
   }
 

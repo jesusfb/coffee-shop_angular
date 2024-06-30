@@ -36,7 +36,7 @@ export class NavigationService {
       }
 
       this.repository.getProducts();
-      this.repository.getCategories();
+     // this.repository.getCategories();
     }
   }
 
