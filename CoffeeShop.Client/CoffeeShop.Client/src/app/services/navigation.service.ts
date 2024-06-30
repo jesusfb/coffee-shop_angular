@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { Repository } from "./repository";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { filter } from 'rxjs/operators';
-import { Category } from "../models/category.model";
 
 @Injectable()
 export class NavigationService {
@@ -35,32 +34,32 @@ export class NavigationService {
         this.repository.paginationObject.currentPage = Number.parseInt(active.params["page"]) || 1;
       }
 
-      this.repository.getProducts();
-     // this.repository.getCategories();
+    //  this.repository.getProducts();
+      this.repository.getCategories();
     }
   }
 
-  get categories(): Category[] {
-    return this.repository.categories;
-  }
+  //get categories(): Category[] {
+  //  return this.repository.categories;
+  //}
 
-  get currentCategory(): string {
-    return this.repository.filter.category || "";
-  }
+  //get currentCategory(): string {
+  //  return this.repository.filter.category || "";
+  //}
 
-  set currentCategory(category: string) {
-    this.repository.filter.category = category;
-    this.router.navigateByUrl(`/store/${(category || "").toLowerCase()}`);
-  }
+  //set currentCategory(category: string) {
+  //  this.repository.filter.category = category;
+  //  this.router.navigateByUrl(`/store/${(category || "").toLowerCase()}`);
+  //}
 
-  get currentSubcategory(): string {
-    return this.repository.filter.subcategory || "";
-  }
+  //get currentSubcategory(): string {
+  //  return this.repository.filter.subcategory || "";
+  //}
 
-  set currentSubcategory(subcategory: string) {
-    this.repository.filter.subcategory = subcategory;
-   // this.router.navigateByUrl(`/${(subcategory || "").toLowerCase()}`);
-  }
+  //set currentSubcategory(subcategory: string) {
+  //  this.repository.filter.subcategory = subcategory;
+  //  this.router.navigateByUrl(`/${(subcategory || "").toLowerCase()}`);
+  //}
 
   //get currentPage(): number {
   //  return this.repository.paginationObject.currentPage;

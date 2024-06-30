@@ -139,50 +139,9 @@ export class Repository {
     this.http.delete(`${suppliersUrl}/${id}`).subscribe(() => this.updateData());
   }
 
-  //getCategories() {
-  //  console.log(`${productsUrl}/categories`);
-  //  this.http.get<Category[]>(`${productsUrl}/categories`).subscribe(categories => this.categories = categories);
-  //}
-
-  //getCategories() {
-  //  console.log(`${productsUrl}/categories`);
-  //  this.http.get<Category[]>(`${productsUrl}/categories`)
-  //    .pipe(
-  //      catchError(error => {
-  //        console.error('Error loading categories:', error);
-  //        return of([]);
-  //      })
-  //    )
-  //    .subscribe(
-  //      categories => {
-  //        this.categories = categories;
-  //        console.log('Categories loaded:', this.categories);
-  //      },
-  //      error => {
-  //        console.error('Error in subscription:', error);
-  //      }
-  //    );
-  //}
-
-  getCategories(callback: () => void) {
+  getCategories() {
     console.log(`${productsUrl}/categories`);
-    this.http.get<Category[]>(`${productsUrl}/categories`)
-      .pipe(
-        catchError(error => {
-          console.error('Error loading categories:', error);
-          return of([]);
-        })
-      )
-      .subscribe(
-        categories => {
-          this.categories = categories;
-          console.log('Categories loaded:', categories);
-          callback();
-        },
-        error => {
-          console.error('Error in subscription:', error);
-        }
-      );
+    this.http.get<Category[]>(`${productsUrl}/categories`).subscribe(categories => this.categories = categories);
   }
 
   storeSessionData<T>(dataType: string, data: T) {

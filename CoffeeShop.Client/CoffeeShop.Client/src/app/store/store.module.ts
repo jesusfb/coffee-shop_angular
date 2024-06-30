@@ -16,12 +16,12 @@ import { Repository } from "../services/repository";
     ProductListComponent
   ],
   imports: [
-    HeaderModule
-    //BrowserModule,
+    HeaderModule,
+    //BrowserModule
     //BrowserAnimationsModule,
     //MatMenuModule,
     //MatButtonModule,
-    //RouterModule
+    RouterModule
   ],
   exports: [
     StoreComponent
