@@ -23,23 +23,23 @@ namespace CoffeeShop.Products.Api.Storage
 
         public async Task<List<Product>> GetProductsAsync(Filter filter)
         {
+            if (!string.IsNullOrEmpty(filter.Search))
+            {
+                return await GetProductsBySearchAsync(filter.Search);
+            }
+            
             if (!string.IsNullOrEmpty(filter.Subcategory))
             {
                 return await GetProductsBySubcategoryAsync(filter.Subcategory);
             }
-            else if (!string.IsNullOrEmpty(filter.Category) && !string.IsNullOrEmpty(filter.Search))
-            {
-                return await GetProductsBySearchAsync(filter.Search, filter.Category);
-            }
-            else if (!string.IsNullOrEmpty(filter.Category))
+            
+            if (!string.IsNullOrEmpty(filter.Category))
             {
                 return await GetProductsByCategoryAsync(filter.Category);
             }
-            else
-            {
-                var query = "SELECT * FROM Products";
-                return await ExecuteQueryAsync(query, new DynamicParameters());
-            }
+            
+            var query = "SELECT * FROM Products";
+            return await ExecuteQueryAsync(query, new DynamicParameters());
         }
 
         private const string CommonQueryPart = @"
@@ -51,7 +51,7 @@ namespace CoffeeShop.Products.Api.Storage
         public async Task<List<Product>> GetProductsByCategoryAsync(string category)
         {
             var query = CommonQueryPart + @"
-                WHERE lower(c.Name) = lower(@CategoryName)";
+                WHERE LOWER(c.Name) = LOWER(@CategoryName)";
 
             var parameters = new DynamicParameters();
             parameters.Add("@CategoryName", category);
@@ -62,7 +62,7 @@ namespace CoffeeShop.Products.Api.Storage
         public async Task<List<Product>> GetProductsBySubcategoryAsync(string subcategoryName)
         {
             var query = CommonQueryPart + @"
-                AND LOWER(sbc.Name) = LOWER(@SubcategoryName)";
+                WHERE LOWER(sbc.Name) = LOWER(@SubcategoryName)";
 
             var parameters = new DynamicParameters();
             parameters.Add("@SubcategoryName", subcategoryName);
@@ -70,14 +70,12 @@ namespace CoffeeShop.Products.Api.Storage
             return await ExecuteQueryAsync(query, parameters);
         }
 
-        public async Task<List<Product>> GetProductsBySearchAsync(string searchKeyword, string category)
+        public async Task<List<Product>> GetProductsBySearchAsync(string searchKeyword)
         {
             var query = CommonQueryPart + @"
-                WHERE lower(c.Name) = lower(@CategoryName)
-                AND p.Name LIKE @Search";
+                WHERE p.Name LIKE @Search";
 
             var parameters = new DynamicParameters();
-            parameters.Add("@CategoryName", category);
             parameters.Add("@Search", $"%{searchKeyword.Replace("_", "[_]")}%");
 
             return await ExecuteQueryAsync(query, parameters);

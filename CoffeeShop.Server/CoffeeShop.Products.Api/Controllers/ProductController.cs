@@ -1,16 +1,13 @@
 ﻿using CoffeeShop.Products.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
-using CoffeeShop.Products.Api.Models.Dto;
 using CoffeeShop.Products.Api.Models;
 
 namespace CoffeeShop.Products.Api.Controllers
 {
     [Route("api/products")]
-    //[Authorize(Roles = "Administrator")]
     [ApiController]
     [EnableCors("AllowSpecificOrigin")]
-    //  [AutoValidateAntiforgeryToken]
     public class ProductController : Controller
     {
         private readonly IProductService productService;

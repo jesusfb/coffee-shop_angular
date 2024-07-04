@@ -10,7 +10,6 @@ namespace CoffeeShop.Products.Api.Models
         [Column(TypeName = "decimal(8, 2)")]
         public decimal Price { get; set; }
         public virtual Category Category { get; set; }
-        public virtual List<ProductRating> ProductRatings { get; set; }
     }
 }
 

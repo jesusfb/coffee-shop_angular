@@ -1,5 +1,4 @@
 ﻿using CoffeeShop.Products.Api.Models;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoffeeShop.Products.Api.Storage
@@ -13,53 +12,16 @@ namespace CoffeeShop.Products.Api.Storage
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<ProductRating> ProductRatings { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
-
-        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            //CreateTimestamps();
-            UpdateTimestamps();
-            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        private void UpdateTimestamps()
-        {
-            var entities = ChangeTracker.Entries();
-            var currentTime = DateTime.UtcNow;
-
-            foreach (var entity in entities)
-            {
-                if (entity.State == EntityState.Modified)
-                {
-                    entity.Property("UpdatedAt").CurrentValue = currentTime;
-                }
-            }
-        }
-
-        private void CreateTimestamps()
-        {
-            var entities = ChangeTracker.Entries()
-                .Where(e => e.State == EntityState.Added);
-
-            var currentTime = DateTime.UtcNow.ToString();
-
-            foreach (var entity in entities)
-            {
-                entity.Property("CreatedAt").CurrentValue = currentTime;
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Product>()
-        .HasOne(p => p.Category)
-        .WithMany(c => c.Products)
-        .HasForeignKey(p => p.CategoryId)
-        .OnDelete(DeleteBehavior.SetNull);
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Category>()
                 .HasMany(c => c.Products)
@@ -73,17 +35,11 @@ namespace CoffeeShop.Products.Api.Storage
                 .HasForeignKey(c => c.ParentCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ProductRating>()
-                .HasOne(pr => pr.Product)
-                .WithMany(p => p.ProductRatings)
-                .HasForeignKey(pr => pr.ProductId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-             SeedData(modelBuilder);
+            SeedData(modelBuilder);
         }
 
         private void SeedData(ModelBuilder modelBuilder)
-        { 
+        {
             var categories = new[]
             {
                 new Category { Id = 1, Name = "Coffee" },
@@ -137,7 +93,7 @@ namespace CoffeeShop.Products.Api.Storage
             // Add products to each subcategory with different counts between 15 and 30
             for (int i = 5; i <= 19; i++)
             {
-                int productCount = random.Next(15, 31);
+                int productCount = random.Next(5, 11);
                 for (int j = 0; j < productCount; j++)
                 {
                     products.Add(new Product
@@ -153,25 +109,6 @@ namespace CoffeeShop.Products.Api.Storage
             }
 
             modelBuilder.Entity<Product>().HasData(products);
-
-            var productRatings = new List<ProductRating>();
-            foreach (var product in products)
-            {
-                int ratingCount = random.Next(1, 6);
-                for (int k = 0; k < ratingCount; k++)
-                {
-                    productRatings.Add(new ProductRating
-                    {
-                        Id = productRatings.Count + 1,
-                        Stars = random.Next(1, 6),
-                        ProductId = product.Id,
-                        CreatedAt = DateTime.Now,
-                        UpdatedAt = DateTime.Now
-                    });
-                }
-            }
-
-            modelBuilder.Entity<ProductRating>().HasData(productRatings);
         }
     }
 }

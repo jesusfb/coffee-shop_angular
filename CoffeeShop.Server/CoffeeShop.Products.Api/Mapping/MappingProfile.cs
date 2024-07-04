@@ -14,8 +14,6 @@ namespace CoffeeShop.Products.Api.Mapping
 
             CreateMap<Product, ProductDto>();
             CreateMap<ProductDto, Product>();
-            CreateMap<ProductRating, ProductRatingDto>();
-            CreateMap<ProductRatingDto, ProductRating>();
         }
     }
 }
