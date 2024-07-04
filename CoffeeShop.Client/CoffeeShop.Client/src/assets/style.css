@@ -101,6 +101,15 @@ CSS STRUCTURE:
         --header-height-min   : 80px;
     }
 }
+
+@media (max-width: 300px) {
+  .main-logo,
+  search,
+  .d-flex {
+    flex-direction: column;
+  }
+}
+
 /* Theme Colors */
 :root {
     --accent-color       : #FFC43F;
@@ -536,6 +545,11 @@ h1,h2,h3,h4,h5,h6 {
 .product-tabs .nav-tabs .nav-item.show .nav-link {
   /* border: none; */
   border-bottom: 3px solid var(--accent-color);
+}
+
+.btn {
+  border: 1px solid #252525;
+  white-space: nowrap;
 }
 
 /* product-grid */

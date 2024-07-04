@@ -73,7 +73,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseCors("AllowSpecificOrigin");
 ApplyMigration(app);
-//SeedDatabase(app);
 
 app.Run();
 
@@ -89,12 +88,3 @@ void ApplyMigration(WebApplication app)
         }
     }
 }
-
-//void SeedDatabase(WebApplication app)
-//{
-//    using (var scope = app.Services.CreateScope())
-//    {
-//        var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
-//        SeedData.SeedDatabase(dataContext);
-//    }
-//}

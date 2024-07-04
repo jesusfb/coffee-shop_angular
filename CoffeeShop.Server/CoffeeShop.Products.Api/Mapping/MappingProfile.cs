@@ -8,14 +8,13 @@ namespace CoffeeShop.Products.Api.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Product, ProductDto>()
-                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryName.ToString()));
-            CreateMap<Supplier, SupplierDto>()
-                .ForMember(dest => dest.ProductsCount, opt => opt.MapFrom(src => src.Products.Count));
+            CreateMap<Category, CategoryDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Subcategories, opt => opt.MapFrom(src => src.Subcategories.Select(sc => sc.Name).ToList()));
+
+            CreateMap<Product, ProductDto>();
+            CreateMap<ProductDto, Product>();
             CreateMap<ProductRating, ProductRatingDto>();
-            CreateMap<ProductDto, Product>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => Enum.Parse<CategoryName>(src.Category)));
-            CreateMap<SupplierDto, Supplier>();
             CreateMap<ProductRatingDto, ProductRating>();
         }
     }

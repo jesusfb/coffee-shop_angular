@@ -5,79 +5,60 @@ import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class NavigationService {
-  constructor(private repository: Repository, private router: Router,
-    private active: ActivatedRoute) {
+  constructor(private repository: Repository, private router: Router, private active: ActivatedRoute) {
     router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.handleNavigationChange());
   }
 
   private handleNavigationChange() {
-    let active = this.active.firstChild?.snapshot;
-    if (active && active.url.length > 0 && active.url[0].path === "store") {
-      if (active.params["categoryOrPage"] !== undefined) {
-        let value = Number.parseInt(active.params["categoryOrPage"]);
+    const snapshot = this.active.firstChild?.snapshot;
 
-        if (!Number.isNaN(value)) {
-          this.repository.filter.category = "";
-          this.repository.paginationObject.currentPage = value;
-        }
-        else {
-          this.repository.filter.category = active.params["categoryOrPage"];
-          this.repository.paginationObject.currentPage = 1;
+    if (snapshot && snapshot.url.length > 0 && snapshot.url[0].path === 'store') {
+      const params = snapshot.params;
+
+      if (params['category'] !== undefined) {
+        if (params['subcategory'] !== undefined) {
+          this.updateCategorySubcategory(params['category'], params['subcategory']);
+        } else {
+          this.updateCategory(params['category']);
         }
       }
-
-      else {
-        let category = active.params["category"];
-        this.repository.filter.category = category || "";
-        this.repository.paginationObject.currentPage = Number.parseInt(active.params["page"]) || 1;
-      }
-
-    //  this.repository.getProducts();
-      this.repository.getCategories();
     }
+    this.repository.getProducts();
   }
 
-  //get categories(): Category[] {
-  //  return this.repository.categories;
-  //}
+  private updateCategory(category: string) {
+    this.repository.filter.category = category || '';
+    this.repository.filter.subcategory = '';
+  }
 
-  //get currentCategory(): string {
-  //  return this.repository.filter.category || "";
-  //}
+  private updateCategorySubcategory(category: string, subcategory: string) {
+    this.repository.filter.category = category || '';
+    this.repository.filter.subcategory = subcategory || '';
+  }
 
-  //set currentCategory(category: string) {
-  //  this.repository.filter.category = category;
-  //  this.router.navigateByUrl(`/store/${(category || "").toLowerCase()}`);
-  //}
+  get currentCategory(): string {
+    return this.repository.filter.category || "";
+  }
 
-  //get currentSubcategory(): string {
-  //  return this.repository.filter.subcategory || "";
-  //}
+  set currentCategory(category: string) {
+    this.repository.filter.category = category;
+    this.router.navigateByUrl(`/store/${(category || "").toLowerCase()}`);
+  }
 
-  //set currentSubcategory(subcategory: string) {
-  //  this.repository.filter.subcategory = subcategory;
-  //  this.router.navigateByUrl(`/${(subcategory || "").toLowerCase()}`);
-  //}
+  get currentSubcategory(): string {
+    return this.repository.filter.subcategory || "";
+  }
 
-  //get currentPage(): number {
-  //  return this.repository.paginationObject.currentPage;
-  //}
+  set currentSubcategory(subcategory: string) {
+    this.repository.filter.subcategory = subcategory;
 
-  //set currentPage(newPage: number) {
-  //  if (this.currentCategory === "") {
-  //    this.router.navigateByUrl(`/store/${newPage}`);
-  //  } else {
-  //    this.router.navigateByUrl(`/store/${this.currentCategory}/${newPage}`);
-  //  }
-  //}
+    let url = `/store/${(this.currentCategory).toLowerCase()}`;
+    if (subcategory) {
+      url += `/${subcategory.toLowerCase()}`;
+    }
 
-  //get productsPerPage(): number {
-  //  return this.repository.paginationObject.productsPerPage;
-  //}
-
-  //get productCount(): number {
-  //  return (this.repository.products || []).length;
-  //}
+    this.router.navigateByUrl(url);
+  }
 }

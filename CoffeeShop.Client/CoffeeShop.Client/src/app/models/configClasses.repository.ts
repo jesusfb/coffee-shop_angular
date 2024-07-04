@@ -1,11 +1,11 @@
 export class Filter {
-  category?: string | "";
-  subcategory?: string | "";
-  search?: string | "";
+  [key: string]: string | undefined;
 
-  //reset() {
-  //  this.category = this.search = '';
+  category?: string = "";
+  subcategory?: string = "";
+  search?: string = "";
 }
+
 
 export class Pagination {
   productsPerPage: number = 4;

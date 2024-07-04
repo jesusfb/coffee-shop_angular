@@ -5,6 +5,6 @@ import { Repository } from "../services/repository";
   templateUrl: "productList.component.html"
 })
 export class ProductListComponent {
-  constructor(public repository: Repository) {
+  constructor(public repo: Repository) {
   }
 }

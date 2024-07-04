@@ -1,5 +1,6 @@
 ﻿using CoffeeShop.DataAccess.Common;
 using CoffeeShop.Products.Api.Models;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoffeeShop.Products.Api.Storage
@@ -12,33 +13,83 @@ namespace CoffeeShop.Products.Api.Storage
             this.context = context;
         }
 
-        public async Task<Product> GetProductAsync(int id) =>
-            await context.Products
-            .Include(p => p.Supplier)
-            .Include(p => p.ProductRatings)
-            .FirstOrDefaultAsync(p => p.Id == id);
-
-        public async Task<List<Product>> GetProductsAsync() =>
-            await context.Products
-            .Include(p => p.Supplier)
-            .Include(p => p.ProductRatings)
-            .ToListAsync();
-
-
-        public async Task<List<Product>> GetProductsWithoutRatingsAsync() =>
-            await context.Products.Include(p => p.ProductRatings).ToListAsync();
-
-        public async Task UpdateProductWithRelatedEntitiesAsync(Product product)
+        public async Task<List<Category>> GetMainCategoriesWithSubcategoriesAsync()
         {
-            try
+            return await context.Categories
+                .Where(c => c.ParentCategoryId == null)
+                .Include(c => c.Subcategories)
+                .ToListAsync();
+        }
+
+        public async Task<List<Product>> GetProductsAsync(Filter filter)
+        {
+            if (!string.IsNullOrEmpty(filter.Subcategory))
             {
-                IncludeNavigationProperties(product);
-                await UpdateAsync(product);
+                return await GetProductsBySubcategoryAsync(filter.Subcategory);
             }
-            catch (Exception e)
+            else if (!string.IsNullOrEmpty(filter.Category) && !string.IsNullOrEmpty(filter.Search))
             {
-                //logger.LogError(e, "An error occurred while updating entity {EntityType}", typeof(TEntity).Name);
-                throw new Exception(e.Message, e.InnerException);
+                return await GetProductsBySearchAsync(filter.Search, filter.Category);
+            }
+            else if (!string.IsNullOrEmpty(filter.Category))
+            {
+                return await GetProductsByCategoryAsync(filter.Category);
+            }
+            else
+            {
+                var query = "SELECT * FROM Products";
+                return await ExecuteQueryAsync(query, new DynamicParameters());
+            }
+        }
+
+        private const string CommonQueryPart = @"
+            SELECT p.*
+            FROM Categories as c
+            JOIN Categories as sbc ON sbc.ParentCategoryId = c.Id
+            JOIN Products as p ON p.CategoryId = sbc.Id";
+
+        public async Task<List<Product>> GetProductsByCategoryAsync(string category)
+        {
+            var query = CommonQueryPart + @"
+                WHERE lower(c.Name) = lower(@CategoryName)";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@CategoryName", category);
+
+            return await ExecuteQueryAsync(query, parameters);
+        }
+
+        public async Task<List<Product>> GetProductsBySubcategoryAsync(string subcategoryName)
+        {
+            var query = CommonQueryPart + @"
+                AND LOWER(sbc.Name) = LOWER(@SubcategoryName)";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@SubcategoryName", subcategoryName);
+
+            return await ExecuteQueryAsync(query, parameters);
+        }
+
+        public async Task<List<Product>> GetProductsBySearchAsync(string searchKeyword, string category)
+        {
+            var query = CommonQueryPart + @"
+                WHERE lower(c.Name) = lower(@CategoryName)
+                AND p.Name LIKE @Search";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@CategoryName", category);
+            parameters.Add("@Search", $"%{searchKeyword.Replace("_", "[_]")}%");
+
+            return await ExecuteQueryAsync(query, parameters);
+        }
+
+        private async Task<List<Product>> ExecuteQueryAsync(string query, DynamicParameters parameters)
+        {
+            using (var connection = context.Database.GetDbConnection())
+            {
+                await connection.OpenAsync();
+                var products = await connection.QueryAsync<Product>(query, parameters);
+                return products.ToList();
             }
         }
     }

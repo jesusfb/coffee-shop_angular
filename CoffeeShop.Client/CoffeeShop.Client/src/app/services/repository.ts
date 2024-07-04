@@ -1,10 +1,10 @@
 import { Product } from "../models/product.model";
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Filter, Pagination } from "../models/configClasses.repository";
 import { Supplier } from "../models/supplier.model";
 import { plainToClass } from 'class-transformer';
-import { Observable, catchError, of } from "rxjs";
+import { Observable, catchError, of, tap } from "rxjs";
 import { Category } from "../models/category.model";
 //const productsUrl = "/api/products";
 
@@ -25,6 +25,7 @@ export class Repository {
   filter: Filter = new Filter();
   paginationObject = new Pagination();
   constructor(private http: HttpClient) {
+    this.getCategories();
   }
 
   getProduct(id: number) {
@@ -32,28 +33,66 @@ export class Repository {
       .subscribe(p => this.product = p);
   }
 
-  getProducts() {
-    let url = `${productsUrl}`;
-    //this.filter.category = 'sdfswerd';
-    //this.filter.search = 'sdfs';
-    const queryParams = [];
+  getProducts(): void {
+    let params = new HttpParams();
 
-    if (this.filter.category !== undefined) {
-      queryParams.push(`category=${this.filter.category}`);
+    if (this.filter) {
+      Object.keys(this.filter).forEach(key => {
+        const value = this.filter[key];
+        if (value !== undefined && value !== null && value !== '') {
+          params = params.set(key, value);
+        }
+      });
     }
 
-    if (this.filter.search !== undefined) {
-      queryParams.push(`search=${this.filter.search}`);
-    }
-
-    if (queryParams.length > 0) {
-      url += `?${queryParams.join('&')}`;
-    }
-
-    this.http.get<Product[]>(url).subscribe(prods => this.products = prods);
-    console.log(url);
-    console.log(this.products);
+    this.http.get<Product[]>(productsUrl, { params }).pipe(
+      catchError(error => {
+        console.error('Error loading products:', error);
+        throw error;
+      })
+    ).subscribe(
+      products => {
+        this.products = products;
+        console.log('Products loaded:', this.products);
+      },
+      error => {
+        console.error('Error loading products:', error);
+      }
+    );
   }
+
+  //getProducts() {
+  //  let url = `${productsUrl}`;
+  //  const queryParams = [];
+
+  //  if (this.filter.category !== undefined && this.filter.category !== "") {
+  //    queryParams.push(`category=${encodeURIComponent(this.filter.category)}`);
+  //  }
+
+  //  if (this.filter.subcategory !== undefined && this.filter.subcategory !== "") {
+  //    queryParams.push(`subcategory=${encodeURIComponent(this.filter.subcategory)}`);
+  //  }
+
+  //  if (this.filter.search !== undefined && this.filter.search !== "") {
+  //    queryParams.push(`search=${encodeURIComponent(this.filter.search)}`);
+  //  }
+
+  //  if (queryParams.length > 0) {
+  //    url += `?${queryParams.join('&')}`;
+  //  }
+
+  //  this.http.get<Product[]>(url).subscribe(
+  //    prods => {
+  //      this.products = prods;
+  //      console.log(this.products);
+  //    },
+  //    error => {
+  //      console.error('Error loading products:', error);
+  //    }
+  //  );
+
+  //  console.log(url);
+  //}
 
   getSuppliers() {
     this.http.get<Supplier[]>(suppliersUrl)

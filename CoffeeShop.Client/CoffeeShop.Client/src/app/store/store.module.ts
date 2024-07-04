@@ -9,6 +9,7 @@ import { StoreComponent } from "./store.component";
 import { ProductListComponent } from "./productList.component";
 import { HeaderModule } from "../header/header.module";
 import { Repository } from "../services/repository";
+import { CommonModule } from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { Repository } from "../services/repository";
     //BrowserAnimationsModule,
     //MatMenuModule,
     //MatButtonModule,
-    RouterModule
+    RouterModule,
+    CommonModule
   ],
   exports: [
     StoreComponent

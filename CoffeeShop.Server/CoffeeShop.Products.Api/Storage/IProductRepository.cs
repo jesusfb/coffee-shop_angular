@@ -5,9 +5,7 @@ namespace CoffeeShop.Products.Api.Storage
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
-        Task<Product> GetProductAsync(int id);
-        Task<List<Product>> GetProductsAsync();
-        Task<List<Product>> GetProductsWithoutRatingsAsync();
-        Task UpdateProductWithRelatedEntitiesAsync(Product product);
+        Task<List<Category>> GetMainCategoriesWithSubcategoriesAsync();
+        Task<List<Product>> GetProductsAsync(Filter filter);
     }
 }

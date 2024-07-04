@@ -10,14 +10,12 @@ namespace CoffeeShop.Products.Api.Storage
             : base(opts)
         {
         }
+
         public DbSet<Product> Products { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<ProductRating> ProductRatings { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            // optionsBuilder.UseLazyLoadingProxies();
-        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
@@ -57,41 +55,123 @@ namespace CoffeeShop.Products.Api.Storage
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>().HasMany(p => p.ProductRatings)
-            .WithOne(r => r.Product).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Product>()
+        .HasOne(p => p.Category)
+        .WithMany(c => c.Products)
+        .HasForeignKey(p => p.CategoryId)
+        .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Product>().HasOne(p => p.Supplier)
-            .WithMany(s => s.Products).OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Category>()
+                .HasMany(c => c.Products)
+                .WithOne(p => p.Category)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Product>().Property(p => p.CategoryName).HasConversion<string>();
+            modelBuilder.Entity<Category>()
+                .HasMany(c => c.Subcategories)
+                .WithOne(c => c.ParentCategory)
+                .HasForeignKey(c => c.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Supplier>().HasData(
-                new Supplier { Id = 1, Name = "Best Beans", City = "Seattle", State = "WA" },
-                new Supplier { Id = 2, Name = "Coffee Palace", City = "San Francisco", State = "CA" },
-                new Supplier { Id = 3, Name = "Java Central", City = "New York", State = "NY" }
-            );
+            modelBuilder.Entity<ProductRating>()
+                .HasOne(pr => pr.Product)
+                .WithMany(p => p.ProductRatings)
+                .HasForeignKey(pr => pr.ProductId)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<Product>().HasData(
-                new Product { Id = 1, Name = "Ethiopian Whole Bean", CategoryName = CategoryName.Coffee, CategoryItem = CategoryItem.WholeBean, Description = "Rich and aromatic Ethiopian beans.", Price = 15.99M, SupplierId = 1 },
-                new Product { Id = 2, Name = "Italian Ground Coffee", CategoryName = CategoryName.Coffee, CategoryItem = CategoryItem.Ground, Description = "Smooth and strong Italian ground coffee.", Price = 12.50M, SupplierId = 2 },
-                new Product { Id = 3, Name = "Instant Coffee Delight", CategoryName = CategoryName.Coffee, CategoryItem = CategoryItem.Instant, Description = "Convenient and tasty instant coffee.", Price = 8.99M, SupplierId = 3 },
-                new Product { Id = 4, Name = "Espresso Coffee Pods", CategoryName = CategoryName.Coffee, CategoryItem = CategoryItem.Pods, Description = "Rich espresso coffee pods.", Price = 9.99M, SupplierId = 1 },
-                new Product { Id = 5, Name = "Organic Coffee Maker", CategoryName = CategoryName.Accessories, CategoryItem = CategoryItem.CoffeeMakers, Description = "Eco-friendly coffee maker.", Price = 55.00M, SupplierId = 2 },
-                new Product { Id = 6, Name = "Monthly Coffee Subscription", CategoryItem = CategoryItem.Subscriptions, Description = "Receive a new coffee each month.", Price = 29.99M, SupplierId = 1 },
-                new Product { Id = 7, Name = "Premium Coffee Subscription", CategoryItem = CategoryItem.Subscriptions, Description = "Premium coffee delivered monthly.", Price = 49.99M, SupplierId = 2 },
-                new Product { Id = 8, Name = "Coffee Lover's Subscription", CategoryItem = CategoryItem.Subscriptions, Description = "Exclusive blends for coffee lovers.", Price = 39.99M, SupplierId = 3 }
-            );
+             SeedData(modelBuilder);
+        }
 
-            modelBuilder.Entity<ProductRating>().HasData(
-                new ProductRating { Id = 1, Stars = 5, ProductId = 1 },
-                new ProductRating { Id = 2, Stars = 4, ProductId = 2 },
-                new ProductRating { Id = 3, Stars = 3, ProductId = 3 },
-                new ProductRating { Id = 4, Stars = 5, ProductId = 4 },
-                new ProductRating { Id = 5, Stars = 4, ProductId = 5 },
-                new ProductRating { Id = 6, Stars = 5, ProductId = 6 },
-                new ProductRating { Id = 7, Stars = 4, ProductId = 7 },
-                new ProductRating { Id = 8, Stars = 5, ProductId = 8 }
-            );
+        private void SeedData(ModelBuilder modelBuilder)
+        { 
+            var categories = new[]
+            {
+                new Category { Id = 1, Name = "Coffee" },
+                new Category { Id = 2, Name = "Accessories" },
+                new Category { Id = 3, Name = "FoodItems" },
+                new Category { Id = 4, Name = "Others" },
+
+                new Category { Id = 5, Name = "WholeBean", ParentCategoryId = 1 },
+                new Category { Id = 6, Name = "Ground", ParentCategoryId = 1 },
+                new Category { Id = 7, Name = "Instant", ParentCategoryId = 1 },
+                new Category { Id = 8, Name = "Pods", ParentCategoryId = 1 },
+                new Category { Id = 9, Name = "Specialty", ParentCategoryId = 1 },
+
+                new Category { Id = 10, Name = "CoffeeMakers", ParentCategoryId = 2 },
+                new Category { Id = 11, Name = "Grinders", ParentCategoryId = 2 },
+                new Category { Id = 12, Name = "Mugs", ParentCategoryId = 2 },
+                new Category { Id = 13, Name = "Filters", ParentCategoryId = 2 },
+
+                new Category { Id = 14, Name = "Pastries", ParentCategoryId = 3 },
+                new Category { Id = 15, Name = "Snacks", ParentCategoryId = 3 },
+                new Category { Id = 16, Name = "Syrups", ParentCategoryId = 3 },
+                new Category { Id = 17, Name = "MilkAlternatives", ParentCategoryId = 3 },
+
+                new Category { Id = 18, Name = "Merchandise", ParentCategoryId = 4 },
+                new Category { Id = 19, Name = "Subscriptions", ParentCategoryId = 4 }
+            };
+
+            modelBuilder.Entity<Category>().HasData(categories);
+
+            var products = new List<Product>();
+            var random = new Random();
+            var subcategoryNames = new Dictionary<int, string>
+            {
+                { 5, "WholeBean" },
+                { 6, "Ground" },
+                { 7, "Instant" },
+                { 8, "Pods" },
+                { 9, "Specialty" },
+                { 10, "CoffeeMakers" },
+                { 11, "Grinders" },
+                { 12, "Mugs" },
+                { 13, "Filters" },
+                { 14, "Pastries" },
+                { 15, "Snacks" },
+                { 16, "Syrups" },
+                { 17, "MilkAlternatives" },
+                { 18, "Merchandise" },
+                { 19, "Subscriptions" }
+            };
+
+            // Add products to each subcategory with different counts between 15 and 30
+            for (int i = 5; i <= 19; i++)
+            {
+                int productCount = random.Next(15, 31);
+                for (int j = 0; j < productCount; j++)
+                {
+                    products.Add(new Product
+                    {
+                        Id = products.Count + 1,
+                        Name = $"{subcategoryNames[i]}_Product_{products.Count + 1}",
+                        Price = (decimal)(random.NextDouble() * 100),
+                        CategoryId = i,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now
+                    });
+                }
+            }
+
+            modelBuilder.Entity<Product>().HasData(products);
+
+            var productRatings = new List<ProductRating>();
+            foreach (var product in products)
+            {
+                int ratingCount = random.Next(1, 6);
+                for (int k = 0; k < ratingCount; k++)
+                {
+                    productRatings.Add(new ProductRating
+                    {
+                        Id = productRatings.Count + 1,
+                        Stars = random.Next(1, 6),
+                        ProductId = product.Id,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now
+                    });
+                }
+            }
+
+            modelBuilder.Entity<ProductRating>().HasData(productRatings);
         }
     }
 }

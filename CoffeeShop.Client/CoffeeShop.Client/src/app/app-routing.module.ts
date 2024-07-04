@@ -4,8 +4,9 @@ import { StoreComponent } from './store/store.component';
 
 const routes: Routes = [
   { path: "store", component: StoreComponent },
-  { path: "", redirectTo: "/store", pathMatch: "full" }
- // { path: "store/:categoryOrPage", component: StoreComponent }
+  { path: "", redirectTo: "/store", pathMatch: "full" },
+  { path: "store/:category", component: StoreComponent },
+  { path: "store/:category/:subcategory", component: StoreComponent }
 ];
 
 @NgModule({

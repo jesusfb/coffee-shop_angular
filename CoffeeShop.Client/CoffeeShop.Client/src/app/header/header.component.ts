@@ -13,14 +13,14 @@ export class HeaderComponent {
   categories: Category[] = [];
 
   constructor(public repository: Repository, private navigation: NavigationService) {
-    this.selectedCategory = "Shop by categories";
+    this.selectedCategory = "All categories";
     this.selectedSubcategory = "";
   }
 
   setCurrentCategory(category: string, subcategory: string | ""): void {
     this.selectedCategory = category;
     this.selectedSubcategory = subcategory;
-    this.repository.filter.category = category;
-    this.repository.filter.subcategory = subcategory;
+    this.navigation.currentCategory = category;
+    this.navigation.currentSubcategory = subcategory;
   }
 }

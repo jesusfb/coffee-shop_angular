@@ -5,14 +5,7 @@ namespace CoffeeShop.Products.Api.Services
 {
     public interface IProductService
     {
-        Task<ProductDto> GetProductAsync(int id);
-        Task<List<ProductDto>> GetProductsAsync();
-        Task<List<ProductDto>> GetProductsWithoutRatingsdAsync();
-        Task<int> CreateAsync(ProductDto productDto);
-        Task UpdateProductAsync(ProductDto productDto);
-        Task UpdateProductWithRelatedEntitiesAsync(ProductDto productDto);
-        Task DeleteProductAsync(int id);
-       // Task<List<string>> GetCategoryTypes();
         Task<List<CategoryDto>> GetCategories();
+        Task<List<ProductDto>> GetProductsAsync(Filter filter);
     }
 }
